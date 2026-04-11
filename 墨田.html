@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨田 | Ink Field</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'MaShanZheng';
+            src: url('fonts/ma-shan-zheng.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'LXGWWenKai';
+            src: url('fonts/lxgwwenkai-regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'SlideQiuHong';
+            src: url('fonts/slideqiuhong-regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        :root {
+            --bg-primary: #f5f2e9;
+            --bg-surface: #faf8f3;
+            --text-primary: #2d2a26;
+            --text-secondary: #6b6560;
+            --grid-line: #c9c4bc;
+            --grid-border: #b8b3ab;
+            --accent: #b9975b;
+            --accent-hover: #a6864d;
+            --border-subtle: #e0dcd4;
+            --shadow: rgba(45, 42, 38, 0.06);
+            --shadow-hover: rgba(45, 42, 38, 0.1);
+            --char-font: "KaiTi", "STKaiti", "BiauKai", "楷体", "TW-Kai", serif;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #1c1917;
+            --bg-surface: #252320;
+            --text-primary: #e8e6e3;
+            --text-secondary: #a39e98;
+            --grid-line: #5a5652;
+            --grid-border: #6b6763;
+            --accent: #d4b17a;
+            --accent-hover: #e4c28a;
+            --border-subtle: #3a3633;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="neon"] {
+            --bg-primary: #0a0a0f;
+            --bg-surface: #12121a;
+            --text-primary: #ffffff;
+            --text-secondary: #8899a6;
+            --grid-line: rgba(0, 255, 255, 0.3);
+            --grid-border: rgba(0, 255, 255, 0.5);
+            --accent: #ff00ff;
+            --accent-hover: #ff33ff;
+            --border-subtle: #2a2a35;
+            --shadow: rgba(0, 255, 255, 0.1);
+            --shadow-hover: rgba(255, 0, 255, 0.2);
+        }
+
+        [data-theme="pastel"] {
+            --bg-primary: #faf8f5;
+            --bg-surface: #ffffff;
+            --text-primary: #5c5c5c;
+            --text-secondary: #9a9a9a;
+            --grid-line: rgba(180, 160, 180, 0.3);
+            --grid-border: rgba(180, 160, 180, 0.45);
+            --accent: #a8b8a0;
+            --accent-hover: #b8c8b0;
+            --border-subtle: #e8e4e0;
+            --shadow: rgba(0, 0, 0, 0.04);
+            --shadow-hover: rgba(0, 0, 0, 0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 24px;
+            min-height: 100vh;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding: 0 4px;
+        }
+        h1 {
+            font-family: "ZCOOL XiaoWei", "Noto Serif SC", serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            letter-spacing: 0.15em;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+        h1 .subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            font-weight: 400;
+        }
+        .theme-toggle {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover { border-color: var(--accent); }
+        .theme-toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle-slider::before {
+            content: "☀";
+            font-size: 12px;
+            color: var(--bg-surface);
+        }
+        [data-theme="dark"] .theme-toggle-slider {
+            transform: translateX(28px);
+        }
+        [data-theme="dark"] .theme-toggle-slider::before {
+            content: "☾";
+        }
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .tab-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--bg-surface);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .input-section {
+            background: var(--bg-surface);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 20px;
+            resize: vertical;
+            font-family: var(--char-font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(185, 151, 91, 0.1);
+        }
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .textarea-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .textarea-overflow-indicator {
+            position: absolute;
+            bottom: 1px;
+            left: 1px;
+            right: 1px;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, var(--bg-primary));
+            border-radius: 0 0 11px 11px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        .textarea-overflow-indicator.visible {
+            opacity: 1;
+        }
+        .controls {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: var(--bg-surface);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(185, 151, 91, 0.3);
+        }
+        button:active { transform: translateY(0); }
+        button.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+        button.secondary:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: none;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .size-control { margin-left: auto; }
+        select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .output-section {
+            background: var(--bg-surface);
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px var(--shadow);
+            min-height: 400px;
+            border: 1px solid var(--border-subtle);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .stroke-order-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 20px;
+        }
+        .character-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .character-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 24px;
+            text-align: center;
+            font-family: var(--char-font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .character-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .svg-container {
+            width: 320px;
+            height: 320px;
+            border: 2px solid var(--grid-border);
+            background: var(--bg-primary);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+        .stroke-info {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .stroke-count {
+            font-size: 24px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .tianzigei-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+        .char-box {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            border: 1.5px solid var(--grid-border);
+            background: 
+                linear-gradient(45deg, transparent 49.5%, var(--grid-line) 49.5%, var(--grid-line) 50.5%, transparent 50.5%),
+                linear-gradient(-45deg, transparent 49.5%, var(--grid-line) 49.5%, var(--grid-line) 50.5%, transparent 50.5%),
+                linear-gradient(0deg, transparent 49.5%, var(--grid-line) 49.5%, var(--grid-line) 50.5%, transparent 50.5%),
+                linear-gradient(90deg, transparent 49.5%, var(--grid-line) 49.5%, var(--grid-line) 50.5%, transparent 50.5%),
+                var(--bg-primary);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--char-font);
+            font-size: 70px;
+            color: var(--text-primary);
+            line-height: 1;
+            box-sizing: border-box;
+            border-radius: 2px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        .char-box:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        .char-box span {
+            display: block;
+            transform: translateY(-5%);
+        }
+        .char-box.punctuation { font-size: 50px; }
+        .char-box.small { width: 60px; height: 60px; font-size: 42px; }
+        .char-box.small.punctuation { font-size: 30px; }
+        .char-box.medium { width: 100px; height: 100px; font-size: 70px; }
+        .char-box.medium.punctuation { font-size: 50px; }
+        .char-box.large { width: 140px; height: 140px; font-size: 100px; }
+        .char-box.large.punctuation { font-size: 72px; }
+        .char-box.xlarge { width: 180px; height: 180px; font-size: 130px; }
+        .char-box.xlarge.punctuation { font-size: 95px; }
+
+                .theme-selector select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-selector select:hover {
+            border-color: var(--accent);
+        }
+        
+        .theme-selector select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* Neon theme special effects */
+        [data-theme="neon"] .char-box {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        [data-theme="neon"] button:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+        }
+        
+        [data-theme="neon"] .svg-container .stroke-path {
+            filter: drop-shadow(0 0 2px rgba(0, 255, 255, 0.8));
+        }
+        
+        [data-theme="neon"] .svg-container .stroke-number {
+            fill: #ff00ff;
+        }
+        
+        [data-theme="neon"] .svg-container .number-bg {
+            fill: rgba(10, 10, 15, 0.8);
+            stroke: #ff00ff;
+        }
+        
+        /* Pastel theme special effects */
+        [data-theme="pastel"] .input-section,
+        [data-theme="pastel"] .output-section {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        
+        [data-theme="pastel"] .char-box {
+            border-radius: 4px;
+        }
+        
+        [data-theme="pastel"] button {
+            border-radius: 12px;
+        }
+        
+        [data-theme="pastel"] .tab-btn {
+            border-radius: 20px;
+        }
+
+        /* Inspiration Tab */
+        .inspiration-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .quote-display {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .quote-display:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+        
+        .quote-text {
+            font-family: var(--char-font);
+            font-size: 28px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        .quote-source {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .inspiration-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .inspiration-controls select {
+            padding: 10px 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .category-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tag {
+            padding: 6px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tag:hover {
+            background: var(--accent);
+            color: var(--bg-surface);
+            border-color: var(--accent);
+        }
+        
+@media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            h1 .subtitle { display: none; }
+            .input-section, .output-section { padding: 16px; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .control-group {
+                margin-left: 0;
+                justify-content: space-between;
+                width: 100%;
+            }
+            .size-control { margin-left: 0; }
+            .svg-container { width: 280px; height: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                墨田
+                <span class="subtitle">INK FIELD</span>
+            </h1>
+            <div class="theme-selector">
+                <select id="themeSelect" onchange="changeTheme()">
+                    <option value="light">☀ 浅色</option>
+                    <option value="dark">☾ 深色</option>
+                    <option value="neon">✦ 霓虹</option>
+                    <option value="pastel">○  pastel</option>
+                </select>
+            </div>
+        </header>
+        
+        <div class="input-section">
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('grid')">田字格</button>
+                <button class="tab-btn" onclick="switchTab('stroke')">笔顺</button>
+                <button class="tab-btn" onclick="switchTab('inspiration')">灵感</button>
+            </div>
+
+            <div id="grid-tab" class="tab-content active">
+                <div class="textarea-wrapper">
+                    <textarea id="input" placeholder="在此输入或粘贴中文文本...">床前明月光
+疑是地上霜</textarea>
+                    <div class="textarea-overflow-indicator" id="overflowIndicator"></div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="generateGrid()">生成田字格</button>
+                    <button class="secondary" onclick="clearAll()">清空</button>
+                    <button class="secondary" onclick="window.print()">打印 / 保存PDF</button>
+                    
+                    <div class="control-group font-control">
+                        <label>字体:</label>
+                        <select id="fontSelect" onchange="updateFont()">
+                            <option value="kaiti">楷体</option>
+                            <option value="mashanzheng">马山正楷</option>
+                            <option value="lxgwwenkai">霞鹜文楷</option>
+                            <option value="slideqiuhong">演示秋鸿楷</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group size-control">
+                        <label>格子大小:</label>
+                        <select id="sizeSelect" onchange="updateSize()">
+                            <option value="small">小 (60px)</option>
+                            <option value="medium" selected>中 (100px)</option>
+                            <option value="large">大 (140px)</option>
+                            <option value="xlarge">特大 (180px)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stroke-tab" class="tab-content">
+                <div class="stroke-order-container">
+                    <div class="character-input-group">
+                        <input type="text" id="strokeCharInput" class="character-input" maxlength="1" placeholder="输入汉字" value="永">
+                        <button onclick="showStrokeOrder()">显示笔顺</button>
+                    </div>
+                    
+                    <div class="svg-container" id="svgContainer">
+                        <div id="svgDefaultMsg" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); text-align: center; padding: 20px;">
+                            输入汉字并点击"显示笔顺"<br>或点击格子中的字
+                        </div>
+                    </div>
+                    
+                    <div class="stroke-info">
+                        <div class="stroke-count" id="strokeCount">-</div>
+                        <div id="charInfo">输入汉字或点击格子中的字查看笔顺</div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Inspiration Tab -->
+            <div id="inspiration-tab" class="tab-content">
+                <div class="inspiration-container">
+                    <div class="quote-display" id="quoteDisplay">
+                        <div class="quote-text" id="quoteText">点击随机按钮获取灵感</div>
+                        <div class="quote-source" id="quoteSource"></div>
+                    </div>
+                    
+                    <div class="inspiration-controls">
+                        <select id="categorySelect" onchange="filterByCategory()">
+                            <option value="all">全部</option>
+                            <option value="论语">论语</option>
+                            <option value="道德经">道德经</option>
+                            <option value="古诗">古诗</option>
+                            <option value="成语">成语</option>
+                            <option value="三国">三国</option>
+                            <option value="菜根谭">菜根谭</option>
+                            <option value="鲁迅">鲁迅</option>
+                            <option value="禅宗">禅宗</option>
+                            <option value="史记">史记</option>
+                            <option value="易经">易经</option>
+                            <option value="孟子">孟子</option>
+                            <option value="诗经">诗经</option>
+                            <option value="散文">散文</option>
+                        </select>
+                        <select id="inspirationFontSelect" onchange="updateInspirationFont()">
+                            <option value="kaiti">楷体</option>
+                            <option value="mashanzheng">马山正楷</option>
+                            <option value="lxgwwenkai">霞鹜文楷</option>
+                            <option value="slideqiuhong">演示秋鸿楷</option>
+                        </select>
+                        <button onclick="showRandomQuote()">🎲 随机</button>
+                        <button class="secondary" onclick="addQuoteToGrid()" title="将随机句子追加到现有文本末尾">添加到田字格 ↵</button>
+                    </div>
+                    
+                    <div class="category-tags">
+                        <span class="tag" onclick="setCategory('论语')">论语</span>
+                        <span class="tag" onclick="setCategory('古诗')">古诗</span>
+                        <span class="tag" onclick="setCategory('成语')">成语</span>
+                        <span class="tag" onclick="setCategory('道德经')">道德经</span>
+                        <span class="tag" onclick="setCategory('菜根谭')">菜根谭</span>
+                        <span class="tag" onclick="setCategory('三国')">三国</span>
+                        <span class="tag" onclick="setCategory('禅宗')">禅宗</span>
+                    </div>
+                </div>
+            </div>
+</div>
+        
+        <div class="output-section">
+            <div id="output" class="tianzigei-container"></div>
+        </div>
+    </div>
+
+    <script src="stroke-data.js"></script>
+    <script src="inspiration-data.js"></script>
+    <script>
+        let strokeData = null;
+        let dataLoading = false;
+        function loadStrokeData() {
+            if (strokeData || dataLoading) return Promise.resolve();
+            dataLoading = true;
+            
+            // Use embedded data from stroke-data.js script
+            if (typeof embeddedStrokeData !== 'undefined') {
+                strokeData = embeddedStrokeData;
+                console.log('墨田: Loaded', Object.keys(strokeData).length, 'characters from embedded data');
+                dataLoading = false;
+                return Promise.resolve();
+            }
+            
+            console.error('墨田: embeddedStrokeData not found');
+            dataLoading = false;
+            document.getElementById('svgContainer').innerHTML = 
+                '<div style="color:#c45c48;text-align:center;padding:20px;">错误：无法加载 stroke-data.js<br>请确保文件在同一目录</div>';
+            return Promise.reject();
+        }
+        
+        // Auto-load data on page load
+        window.addEventListener('load', () => {
+            if (typeof embeddedStrokeData !== 'undefined') {
+                strokeData = embeddedStrokeData;
+                console.log('墨田: Data auto-loaded on page load');
+            } else {
+                console.warn('墨田: Data not available on load');
+            }
+            // Initialize overflow indicator
+            updateOverflowIndicator();
+        });
+
+        
+        const input = document.getElementById('input');
+        
+        // Monitor textarea overflow
+        input.addEventListener('input', updateOverflowIndicator);
+        input.addEventListener('scroll', updateOverflowIndicator);
+        const output = document.getElementById('output');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const fontSelect = document.getElementById('fontSelect');
+        const root = document.documentElement;
+        let currentSize = 'medium';
+
+        const fontFamilies = {
+            'kaiti': '"KaiTi", "STKaiti", "BiauKai", "楷体", "TW-Kai", serif',
+            'mashanzheng': '"MaShanZheng", "KaiTi", "STKaiti", serif',
+            'lxgwwenkai': '"LXGWWenKai", "KaiTi", "STKaiti", serif',
+            'slideqiuhong': '"SlideQiuHong", "KaiTi", "STKaiti", serif'
+        };
+
+        function renderStrokeOrder(character) {
+            const container = document.getElementById('svgContainer');
+            const countEl = document.getElementById('strokeCount');
+            const infoEl = document.getElementById('charInfo');
+            
+            console.log('Rendering stroke order for:', character);
+            console.log('strokeData loaded:', !!strokeData);
+            console.log('Character in data:', character in (strokeData || {}));
+            
+            const data = strokeData[character];
+            
+            if (!data || !data.s) {
+                container.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary); text-align: center; padding: 20px;">暂无 "${character}" 的笔顺数据</div>`;
+                countEl.textContent = '-';
+                infoEl.textContent = '该字符暂无笔顺数据';
+                return;
+            }
+            
+            const strokes = data.s;
+            const medians = data.m || [];
+            const viewBoxSize = 1024;
+            const padding = 80;
+            const effectiveSize = viewBoxSize - (padding * 2);
+            
+            let minX = viewBoxSize, minY = viewBoxSize, maxX = 0, maxY = 0;
+            strokes.forEach(path => {
+                const matches = path.match(/[-]?[0-9]+/g);
+                if (matches) {
+                    for (let i = 0; i < matches.length; i += 2) {
+                        const x = parseInt(matches[i]);
+                        const y = parseInt(matches[i+1]) || 0;
+                        minX = Math.min(minX, x);
+                        minY = Math.min(minY, y);
+                        maxX = Math.max(maxX, x);
+                        maxY = Math.max(maxY, y);
+                    }
+                }
+            });
+            
+            const charWidth = maxX - minX || viewBoxSize;
+            const charHeight = maxY - minY || viewBoxSize;
+            const scale = Math.min(effectiveSize / charWidth, effectiveSize / charHeight) * 0.85;
+            
+            const offsetX = (viewBoxSize - charWidth * scale) / 2 - minX * scale;
+            const offsetY = (viewBoxSize - charHeight * scale) / 2 - minY * scale;
+            
+            let svgContent = `<svg viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">`;
+            
+            svgContent += `<line x1="0" y1="${viewBoxSize/2}" x2="${viewBoxSize}" y2="${viewBoxSize/2}" stroke="#c9c4bc" stroke-dasharray="10,10" stroke-width="2"/>`;
+            svgContent += `<line x1="${viewBoxSize/2}" y1="0" x2="${viewBoxSize/2}" y2="${viewBoxSize}" stroke="#c9c4bc" stroke-dasharray="10,10" stroke-width="2"/>`;
+            svgContent += `<line x1="0" y1="0" x2="${viewBoxSize}" y2="${viewBoxSize}" stroke="#c9c4bc" stroke-dasharray="10,10" stroke-width="2"/>`;
+            svgContent += `<line x1="${viewBoxSize}" y1="0" x2="0" y2="${viewBoxSize}" stroke="#c9c4bc" stroke-dasharray="10,10" stroke-width="2"/>`;
+            svgContent += `<rect x="20" y="20" width="${viewBoxSize-40}" height="${viewBoxSize-40}" fill="none" stroke="#b8b3ab" stroke-width="4" rx="10"/>`;
+            
+            svgContent += `<g transform="translate(${offsetX}, ${offsetY + charHeight * scale}) scale(${scale}, -${scale})">`;
+            
+            strokes.forEach((strokePath) => {
+                svgContent += `<path d="${strokePath}" fill="none" stroke="var(--text-primary, #2d2a26)" stroke-width="${6/scale}" stroke-linecap="round" stroke-linejoin="round"/>`;
+            });
+            
+            svgContent += `</g>`;
+            
+            medians.forEach((median, index) => {
+                if (median && median.length > 0) {
+                    const pt = median[0];
+                    const x = pt[0] * scale + offsetX;
+                    const y = -(pt[1] * scale) + (offsetY + charHeight * scale);
+                    
+                    svgContent += `<circle cx="${x}" cy="${y}" r="30" fill="var(--bg-surface, #faf8f3)" stroke="var(--accent, #b9975b)" stroke-width="3"/>`;
+                    svgContent += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="24" font-weight="bold" fill="var(--accent, #b9975b)">${index + 1}</text>`;
+                }
+            });
+            
+            svgContent += '</svg>';
+            container.innerHTML = svgContent;
+            
+            countEl.textContent = strokes.length + ' 画';
+            infoEl.textContent = '按笔画顺序书写';
+        }
+        
+        function showStrokeOrder() {
+            const char = document.getElementById('strokeCharInput').value.trim();
+            if (!char) return;
+            if (!strokeData) {
+                document.getElementById('svgContainer').innerHTML = 
+                    '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);">加载笔顺数据...</div>';
+                loadStrokeData().then(() => {
+                    if (strokeData) renderStrokeOrder(char.charAt(0));
+                });
+            } else {
+                renderStrokeOrder(char.charAt(0));
+            }
+        }
+
+        
+
+        function changeTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('moge-theme', theme);
+        }
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem('moge-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeSelect').value = savedTheme;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'grid') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('grid-tab').classList.add('active');
+            } else if (tab === 'stroke') {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('stroke-tab').classList.add('active');
+            } else if (tab === 'inspiration') {
+                document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+                document.getElementById('inspiration-tab').classList.add('active');
+            }
+        }
+
+        function initFont() {
+            const savedFont = localStorage.getItem('moge-font');
+            if (savedFont && fontFamilies[savedFont]) {
+                fontSelect.value = savedFont;
+                updateFont(false);
+                // Sync inspiration font selector
+                document.getElementById('inspirationFontSelect').value = savedFont;
+                updateInspirationFont();
+            }
+        }
+
+        function updateFont(regenerate = true) {
+            const selectedFont = fontSelect.value;
+            root.style.setProperty('--char-font', fontFamilies[selectedFont]);
+            localStorage.setItem('moge-font', selectedFont);
+            // Sync inspiration font selector
+            const inspirationFontSelect = document.getElementById('inspirationFontSelect');
+            if (inspirationFontSelect) {
+                inspirationFontSelect.value = selectedFont;
+                updateInspirationFont();
+            }
+            if (regenerate) generateGrid();
+        }
+        
+        function isPunctuation(char) {
+            return /[\u3000-\u303F\uFF00-\uFFEF\u2000-\u206F]/.test(char) || 
+                   /[。，、；：？！""''（）【】《》]/.test(char);
+        }
+
+        function getBoxSize() {
+            const sizes = { 'small': 60, 'medium': 100, 'large': 140, 'xlarge': 180 };
+            return sizes[currentSize] || 100;
+        }
+
+        function getMaxCharsPerRow() {
+            const boxSize = getBoxSize();
+            const gap = 6;
+            const containerWidth = output.clientWidth;
+            const maxChars = Math.floor((containerWidth + gap) / (boxSize + gap));
+            return Math.max(1, maxChars);
+        }
+        
+        // Inspiration feature functions
+        let currentCategory = 'all';
+        let currentQuote = null;
+        
+        function showRandomQuote() {
+            if (typeof inspirationData === 'undefined' || !inspirationData || inspirationData.length === 0) {
+                console.error('墨田: inspirationData not loaded');
+                document.getElementById('quoteText').textContent = '数据加载中... 请刷新页面重试';
+                return;
+            }
+            
+            let quotes = inspirationData;
+            if (currentCategory !== 'all') {
+                quotes = inspirationData.filter(q => q.c === currentCategory);
+            }
+            
+            if (quotes.length === 0) {
+                document.getElementById('quoteText').textContent = '该分类暂无数据';
+                document.getElementById('quoteSource').textContent = '';
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            currentQuote = quotes[randomIndex];
+            
+            displayQuote(currentQuote);
+        }
+        
+        function displayQuote(quote) {
+            document.getElementById('quoteText').textContent = quote.t;
+            let source = quote.s || '';
+            if (quote.a) source += ' · ' + quote.a;
+            document.getElementById('quoteSource').textContent = source;
+        }
+        
+        function filterByCategory() {
+            currentCategory = document.getElementById('categorySelect').value;
+            showRandomQuote();
+        }
+        
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.getElementById('categorySelect').value = cat;
+            showRandomQuote();
+        }
+        
+        function updateInspirationFont() {
+            const selectedFont = document.getElementById('inspirationFontSelect').value;
+            // Update global CSS variable (same as updateFont)
+            root.style.setProperty('--char-font', fontFamilies[selectedFont]);
+            localStorage.setItem('moge-font', selectedFont);
+            // Sync the grid tab font selector
+            fontSelect.value = selectedFont;
+        }
+        
+        // Check if textarea content overflows and show/hide indicator
+        function updateOverflowIndicator() {
+            const textarea = document.getElementById('input');
+            const indicator = document.getElementById('overflowIndicator');
+            if (textarea && indicator) {
+                const hasOverflow = textarea.scrollHeight > textarea.clientHeight;
+                indicator.classList.toggle('visible', hasOverflow);
+            }
+        }
+        
+        function addQuoteToGrid() {
+            if (!currentQuote) {
+                alert('请先点击随机按钮选择一段文字');
+                return;
+            }
+            
+            const textarea = document.getElementById('input');
+            if (textarea.value && !textarea.value.endsWith('\n')) {
+                textarea.value += '\n';
+            }
+            textarea.value += currentQuote.t + '\n';
+            
+            // Scroll to bottom to show newly added text
+            textarea.scrollTop = textarea.scrollHeight;
+            updateOverflowIndicator();
+            
+            switchTab('grid');
+            generateGrid();
+        }
+        
+        function generateGrid() {
+            const text = input.value;
+            output.innerHTML = '';
+            
+            if (!text.trim()) return;
+            
+            const lines = text.split('\n');
+            const maxCharsPerRow = getMaxCharsPerRow();
+            
+            lines.forEach((line, lineIndex) => {
+                if (lineIndex > 0 && line === '' && lines[lineIndex - 1] === '') return;
+                
+                const chars = Array.from(line);
+                
+                if (chars.length === 0) {
+                    const row = document.createElement('div');
+                    row.className = 'row';
+                    row.style.height = '20px';
+                    output.appendChild(row);
+                    return;
+                }
+                
+                const chunks = [];
+                for (let i = 0; i < chars.length; i += maxCharsPerRow) {
+                    chunks.push(chars.slice(i, i + maxCharsPerRow));
+                }
+                
+                chunks.forEach(chunk => {
+                    const row = document.createElement('div');
+                    row.className = 'row';
+                    
+                    chunk.forEach(char => {
+                        const box = document.createElement('div');
+                        box.className = 'char-box ' + currentSize;
+                        if (isPunctuation(char)) box.classList.add('punctuation');
+                        
+                        const span = document.createElement('span');
+                        span.textContent = char;
+                        box.appendChild(span);
+                        
+                        box.onclick = () => {
+                            document.getElementById('strokeCharInput').value = char;
+                            switchTab('stroke');
+                            setTimeout(() => showStrokeOrder(), 100);
+                        };
+                        
+                        row.appendChild(box);
+                    });
+                    
+                    output.appendChild(row);
+                });
+            });
+            updateOverflowIndicator();
+        }
+
+        function clearAll() {
+            input.value = '';
+            output.innerHTML = '';
+            updateOverflowIndicator();
+            input.focus();
+        }
+        
+        function updateSize() {
+            currentSize = sizeSelect.value;
+            generateGrid();
+        }
+        
+        let timeout;
+        input.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(generateGrid, 300);
+        });
+        
+        input.addEventListener('paste', () => setTimeout(generateGrid, 0));
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(generateGrid, 150);
+        });
+
+        // Theme initialized in changeTheme function
+        initFont();
+        generateGrid();
+    </script>
+</body>
+</html>
