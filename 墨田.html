@@ -553,6 +553,19 @@
             border-color: var(--accent);
         }
         
+@keyframes heartbeat {
+            0%, 100% { transform: translateY(-5%) scale(1); }
+            25% { transform: translateY(-5%) scale(1.08); }
+            50% { transform: translateY(-5%) scale(1); }
+            75% { transform: translateY(-5%) scale(1.05); }
+        }
+        .char-box.highlight-back {
+            animation: heartbeat 1.4s ease-in-out;
+            border-color: var(--accent);
+            color: var(--accent);
+            background-color: rgba(185, 151, 91, 0.08);
+        }
+        
 @media (max-width: 768px) {
             body { padding: 16px; }
             h1 { font-size: 1.5rem; }
@@ -566,6 +579,28 @@
             }
             .size-control { margin-left: 0; }
             .svg-container { width: 280px; height: 280px; }
+        }
+        .back-to-box {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            padding: 12px 20px;
+            background: var(--accent);
+            color: var(--bg-surface);
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+        .back-to-box:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
     </style>
 </head>
@@ -747,6 +782,7 @@
         const fontSelect = document.getElementById('fontSelect');
         const root = document.documentElement;
         let currentSize = 'medium';
+        let lastClickedBox = null;
 
         const fontFamilies = {
             'kaiti': '"KaiTi", "STKaiti", "BiauKai", "楷体", "TW-Kai", serif',
@@ -835,6 +871,34 @@
             infoEl.textContent = '按笔画顺序书写';
         }
         
+        function smoothScrollToElement(element, duration = 1000) {
+            const targetY = element.getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2) + (element.offsetHeight / 2);
+            const startY = window.pageYOffset;
+            const diff = targetY - startY;
+            const startTime = performance.now();
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+                window.scrollTo(0, startY + diff * ease);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function goBackToBox() {
+            switchTab('grid');
+            if (lastClickedBox) {
+                lastClickedBox.classList.remove('highlight-back');
+                smoothScrollToElement(lastClickedBox, 1000);
+                lastClickedBox.classList.add('highlight-back');
+                setTimeout(() => {
+                    lastClickedBox.classList.remove('highlight-back');
+                }, 1400);
+            }
+            document.getElementById('backToBoxBtn').style.display = 'none';
+        }
+
         function showStrokeOrder() {
             const char = document.getElementById('strokeCharInput').value.trim();
             if (!char) return;
@@ -870,6 +934,7 @@
             if (tab === 'grid') {
                 document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
                 document.getElementById('grid-tab').classList.add('active');
+                document.getElementById('backToBoxBtn').style.display = 'none';
             } else if (tab === 'stroke') {
                 document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
                 document.getElementById('stroke-tab').classList.add('active');
@@ -1047,9 +1112,12 @@
                         box.appendChild(span);
                         
                         box.onclick = () => {
+                            lastClickedBox = box;
                             document.getElementById('strokeCharInput').value = char;
                             switchTab('stroke');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                             setTimeout(() => showStrokeOrder(), 100);
+                            document.getElementById('backToBoxBtn').style.display = 'block';
                         };
                         
                         row.appendChild(box);
@@ -1091,5 +1159,6 @@
         initFont();
         generateGrid();
     </script>
+    <button id="backToBoxBtn" class="back-to-box" onclick="goBackToBox()">↩ 返回原位置</button>
 </body>
 </html>
