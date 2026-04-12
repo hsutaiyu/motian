@@ -30,7 +30,7 @@ follow the [quick start](#quick-start) steps to get started.
 | ✍️ **笔顺 -- stroke order viewer** | click any character in the grid to see how it's written, step by step |
 | 🎲 **灵感 -- inspiration roulette** | random quotes by category; add them straight to your practice sheet |
 | 🎨 **4 themes** | light, dark, neon (still working on this one), and pastel (a lot like light but softer) |
-| 🖨️ **print friendly** | hit "Print / Save PDF" and it just *works* (still working on getting this right) |
+| 🖨️ **print friendly** | hit "打印/保存PDF" to download or print the generated grid (still working on getting this right) |
 | 💾 **persistent settings** | your theme & font preferences stick around between sessions |
 
 ### included fonts
