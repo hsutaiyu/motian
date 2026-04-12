@@ -8,8 +8,6 @@
 [![No build step](https://img.shields.io/badge/Build%20step-none-2d2a26?style=flat-square)](#)
 [![Authored by](https://img.shields.io/badge/Authored%20by-kimi%20%26%20vibes-b9975b?style=flat-square)](#)
 
----
-
 ## what is this?
 
 **墨田** is a single-file, zero-dependency web app I built because I wanted a place to:
@@ -23,8 +21,6 @@
 follow the [quick start](#quick-start) steps to get started.
 
 > **Note:** make sure you have JavaScript enabled in your browser. nothing works without it.
-
----
 
 ## features
 
@@ -46,8 +42,6 @@ follow the [quick start](#quick-start) steps to get started.
 
 > i'll add more fonts in v2!
 
----
-
 ## quick start
 
 ```bash
@@ -65,8 +59,6 @@ xdg-open 墨田.html    # Linux
 
 That's it. 墨田 should be open in your browser at this point.
 
----
-
 ## project structure
 
 ```text
@@ -81,8 +73,6 @@ That's it. 墨田 should be open in your browser at this point.
 └── README.md           # you are here 👋
 ```
 
----
-
 ## why call it "墨田"?
 
 the name occurred to me randomly at 3:00 AM.
@@ -94,13 +84,11 @@ put them together and you get an "ink field": a little plot of land where charac
 also it sounds nice.
 also that's the EN translation Kimi recommended and I thought it was cute lol
 
----
-
 ## credits & license
 
-- Stroke order data derived from the [MakeMeAHanzi](https://github.com/skishore/makemeahanzi) project.
-- Fonts are open-source and bundled under their respective licenses.
-- The quote collection is a personal curation built over time — feel free to borrow, remix, or add your own favorites in `inspiration-data.js`.
+- stroke order data derived from the [MakeMeAHanzi](https://github.com/skishore/makemeahanzi) project.
+- fonts are open-source and bundled under their respective licenses.
+- the quote collection is a personal curation built over time — feel free to borrow, remix, or add your own favorites in `inspiration-data.js`.
 
 This project is shared as-is, with love, for anyone else who finds joy in writing or even just looking at Chinese characters.
 
