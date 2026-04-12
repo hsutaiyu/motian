@@ -16,7 +16,7 @@
 2. **look up stroke order** for any character (just click a grid box or type one in).
 3. **draw random inspiration** from a curated collection of ~800 quotes spanning 论语, 道德经, Tang poetry, popular 成语, Zen koans, 鲁迅, and some modern stuff.
 
-墨田 runs in your browser. No server deployment. No build steps. No package management. Just clone the repo and open `墨田.html` in a browser and start exploring.
+墨田 runs in your browser. no server deployment. no build steps. no package management. Just clone the repo and open `墨田.html` in a browser and start exploring.
 
 follow the [quick start](#quick-start) steps to get started.
 
@@ -26,12 +26,12 @@ follow the [quick start](#quick-start) steps to get started.
 
 | feature | what it does |
 |---------|--------------|
-| 📝 **田字格 -- Character Grid Generator** | paste any Chinese text, pick a font & size, get instant printable grids |
-| ✍️ **笔顺 -- Stroke Order Viewer** | click any character in the grid to see how it's written, step by step |
-| 🎲 **灵感 -- Inspiration Roulette** | random quotes by category; add them straight to your practice sheet |
-| 🎨 **4 Themes** | light, dark, neon (still working on this one), and pastel (a lot like light but softer) |
-| 🖨️ **Print Friendly** | hit "Print / Save PDF" and it just *works* (still working on getting this right) |
-| 💾 **Persistent Settings** | your theme & font preferences stick around between sessions |
+| 📝 **田字格 -- character grid generator** | paste any Chinese text, pick a font & size, get instant printable grids |
+| ✍️ **笔顺 -- stroke order viewer** | click any character in the grid to see how it's written, step by step |
+| 🎲 **灵感 -- inspiration roulette** | random quotes by category; add them straight to your practice sheet |
+| 🎨 **4 themes** | light, dark, neon (still working on this one), and pastel (a lot like light but softer) |
+| 🖨️ **print friendly** | hit "Print / Save PDF" and it just *works* (still working on getting this right) |
+| 💾 **persistent settings** | your theme & font preferences stick around between sessions |
 
 ### included fonts
 
@@ -57,7 +57,7 @@ start 墨田.html       # Windows
 xdg-open 墨田.html    # Linux
 ```
 
-That's it. 墨田 should be open in your browser at this point.
+that's it. 墨田 should be open in your browser at this point.
 
 ## project structure
 
@@ -90,7 +90,7 @@ also that's the EN translation Kimi recommended and I thought it was cute lol
 - fonts are open-source and bundled under their respective licenses.
 - the quote collection is a personal curation built over time — feel free to borrow, remix, or add your own favorites in `inspiration-data.js`.
 
-This project is shared as-is, with love, for anyone else who finds joy in writing or even just looking at Chinese characters.
+this project is shared as-is, with love, for anyone else who finds joy in writing or even just looking at Chinese characters.
 
 ---
 
