@@ -14,7 +14,7 @@
 
 1. **generate 田字格** — Chinese character practice grids — with custom text, fonts, and sizes.
 2. **look up stroke order** for any character (just click a grid box or type one in).
-3. **draw random inspiration** from a curated collection of ~800 quotes spanning 论语, 道德经, Tang poetry, popular 成语, Zen koans, 鲁迅, and some modern stuff.
+3. **draw random inspiration** from a curated collection of 1,000+ quotes spanning 论语, 道德经, Tang poetry, popular 成语, Zen koans, 鲁迅, and some modern stuff.
 
 墨田 runs in your browser. no server deployment. no build steps. no package management. Just clone the repo and open `墨田.html` in a browser and start exploring.
 
@@ -65,7 +65,7 @@ that's it. 墨田 should be open in your browser at this point.
 墨田/
 ├── 墨田.html           # the entire app lives here
 ├── stroke-data.js      # embedded stroke order data
-├── inspiration-data.js # ~800 quotes from across the ages
+├── inspiration-data.js # 1,000+ quotes from across the ages
 ├── fonts/              # bundled open-source Chinese fonts
 │   ├── lxgwwenkai-regular.ttf
 │   ├── ma-shan-zheng.ttf
