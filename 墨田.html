@@ -603,6 +603,99 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media print {
+            header,
+            .tab-nav,
+            .controls,
+            .inspiration-controls,
+            .category-tags,
+            .back-to-box,
+            .theme-selector,
+            #stroke-tab,
+            #inspiration-tab,
+            .textarea-wrapper,
+            .textarea-overflow-indicator,
+            .toast {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .input-section {
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .output-section {
+                background: none !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .row {
+                gap: 4px !important;
+            }
+
+            .char-box {
+                border-color: #333 !important;
+                color: #000 !important;
+                background: white !important;
+                box-shadow: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .char-box .grid-line {
+                border-color: #ccc !important;
+            }
+
+            .char-box {
+                break-inside: avoid;
+            }
+
+            .row {
+                break-inside: avoid;
+            }
+        }
     </style>
 </head>
 <body>
@@ -692,6 +785,9 @@
                     </div>
                     
                     <div class="inspiration-controls">
+                        <button class="secondary" onclick="showPreviousQuote()" title="上一条">←</button>
+                        <button class="secondary" onclick="showNextQuote()" title="下一条">→</button>
+                        <button onclick="copyQuoteToClipboard()" title="复制到剪贴板">📋 复制</button>
                         <select id="categorySelect" onchange="filterByCategory()">
                             <option value="all">全部</option>
                             <option value="古诗">古诗</option>
@@ -767,6 +863,8 @@
             <div id="output" class="tianzigei-container"></div>
         </div>
     </div>
+
+    <div class="toast" id="toast"></div>
 
     <script src="stroke-data.js"></script>
     <script src="inspiration-data.js"></script>
@@ -1022,6 +1120,8 @@
         // Inspiration feature functions
         let currentCategory = 'all';
         let currentQuote = null;
+        let quoteHistory = [];
+        let quoteHistoryIndex = -1;
         
         function showRandomQuote() {
             if (typeof inspirationData === 'undefined' || !inspirationData || inspirationData.length === 0) {
@@ -1043,6 +1143,13 @@
             
             const randomIndex = Math.floor(Math.random() * quotes.length);
             currentQuote = quotes[randomIndex];
+            
+            // If browsing history, truncate forward history and append new quote
+            if (quoteHistoryIndex < quoteHistory.length - 1) {
+                quoteHistory = quoteHistory.slice(0, quoteHistoryIndex + 1);
+            }
+            quoteHistory.push(currentQuote);
+            quoteHistoryIndex = quoteHistory.length - 1;
             
             displayQuote(currentQuote);
         }
@@ -1084,9 +1191,77 @@
             }
         }
         
+        function showPreviousQuote() {
+            if (quoteHistory.length === 0) {
+                showToast('暂无历史记录');
+                return;
+            }
+            if (quoteHistoryIndex > 0) {
+                quoteHistoryIndex--;
+                currentQuote = quoteHistory[quoteHistoryIndex];
+                displayQuote(currentQuote);
+            } else {
+                showToast('已经是第一条了');
+            }
+        }
+        
+        function showNextQuote() {
+            if (quoteHistory.length === 0) {
+                showToast('暂无历史记录');
+                return;
+            }
+            if (quoteHistoryIndex < quoteHistory.length - 1) {
+                quoteHistoryIndex++;
+                currentQuote = quoteHistory[quoteHistoryIndex];
+                displayQuote(currentQuote);
+            } else {
+                showToast('已经是最后一条了');
+            }
+        }
+        
+        function copyQuoteToClipboard() {
+            if (!currentQuote) {
+                showToast('请先点击随机按钮选择一段文字');
+                return;
+            }
+            const textToCopy = currentQuote.t + (currentQuote.s ? ' —— ' + currentQuote.s + (currentQuote.a ? ' · ' + currentQuote.a : '') : '');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast('已复制到剪贴板');
+                }).catch(() => {
+                    fallbackCopy(textToCopy);
+                });
+            } else {
+                fallbackCopy(textToCopy);
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('已复制到剪贴板');
+            } catch (err) {
+                showToast('复制失败，请手动复制');
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+        
         function addQuoteToGrid() {
             if (!currentQuote) {
-                alert('请先点击随机按钮选择一段文字');
+                showToast('请先点击随机按钮选择一段文字');
                 return;
             }
             
